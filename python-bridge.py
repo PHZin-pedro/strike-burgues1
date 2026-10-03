@@ -1,0 +1,1 @@
+# Ponte Python opcional para USB/serial. O sistema principal não depende de Python.\n

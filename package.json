@@ -1,0 +1,18 @@
+{
+  "name": "lanchonete-atendente-estoque",
+  "version": "1.2.0",
+  "private": true,
+  "description": "Sistema simples para atendente enviar pedidos para cozinha e controlar estoque pelo celular.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "cors": "^2.8.5"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

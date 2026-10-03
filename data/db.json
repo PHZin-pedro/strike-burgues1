@@ -1,0 +1,32 @@
+{
+  "settings": {
+    "name": "Strike Burgue's",
+    "printer": { "mode": "network", "host": "", "port": 9100 }
+  },
+  "products": [
+    {"id":1,"name":"X-Tudd da Praça","price":10,"category":"Hambúrguer","active":true,"ingredients":[{"name":"Pão","qty":1},{"name":"Hambúrguer","qty":1},{"name":"Tomate","qty":1},{"name":"Alface","qty":1},{"name":"Salsicha","qty":1},{"name":"Ovo","qty":1}]},
+    {"id":2,"name":"X-Bacon","price":15,"category":"Hambúrguer","active":true,"ingredients":[{"name":"Pão","qty":1},{"name":"Hambúrguer","qty":1},{"name":"Tomate","qty":1},{"name":"Alface","qty":1},{"name":"Salsicha","qty":1},{"name":"Ovo","qty":1},{"name":"Bacon","qty":1}]},
+    {"id":3,"name":"X-Calabresa","price":15,"category":"Hambúrguer","active":true,"ingredients":[{"name":"Pão","qty":1},{"name":"Hambúrguer","qty":1},{"name":"Tomate","qty":1},{"name":"Alface","qty":1},{"name":"Salsicha","qty":1},{"name":"Ovo","qty":1},{"name":"Calabresa","qty":1}]},
+    {"id":4,"name":"X-Trio","price":18,"category":"Hambúrguer","active":true,"ingredients":[{"name":"Pão","qty":1},{"name":"Hambúrguer","qty":1},{"name":"Presunto","qty":1},{"name":"Muçarela","qty":1},{"name":"Milho","qty":1},{"name":"Tomate","qty":1},{"name":"Alface","qty":1},{"name":"Salsicha","qty":1},{"name":"Ovo","qty":1},{"name":"Bacon","qty":1},{"name":"Calabresa","qty":1}]},
+    {"id":5,"name":"X-Strike","price":22,"category":"Hambúrguer","active":true,"ingredients":[{"name":"Pão artesanal","qty":1},{"name":"Hambúrguer artesanal","qty":1},{"name":"Presunto","qty":1},{"name":"Muçarela","qty":1},{"name":"Milho","qty":1},{"name":"Tomate","qty":1},{"name":"Alface","qty":1},{"name":"Salsicha","qty":1},{"name":"Ovo","qty":1},{"name":"Bacon","qty":1},{"name":"Calabresa","qty":1}]},
+    {"id":6,"name":"Batata Pequena 200g","price":10,"category":"Batata Frita","active":true,"ingredients":[{"name":"Batata","qty":1},{"name":"Queijo","qty":1}]},
+    {"id":7,"name":"Batata Pequena Completa 200g","price":15,"category":"Batata Frita","active":true,"ingredients":[{"name":"Batata","qty":1},{"name":"Queijo","qty":1},{"name":"Bacon","qty":1},{"name":"Calabresa","qty":1}]},
+    {"id":8,"name":"Batata Grande 400g","price":15,"category":"Batata Frita","active":true,"ingredients":[{"name":"Batata","qty":2},{"name":"Queijo","qty":1}]},
+    {"id":9,"name":"Batata Grande Completa 400g","price":20,"category":"Batata Frita","active":true,"ingredients":[{"name":"Batata","qty":2},{"name":"Queijo","qty":1},{"name":"Bacon","qty":1},{"name":"Calabresa","qty":1}]},
+    {"id":10,"name":"Cachorro Quente Simples","price":7.5,"category":"Cachorro Quente","active":true,"ingredients":[{"name":"Pão hot dog","qty":1},{"name":"Salsicha","qty":1},{"name":"Milho","qty":1},{"name":"Batata palha","qty":1},{"name":"Molho especial","qty":1},{"name":"Catupiry","qty":1}]},
+    {"id":11,"name":"Cachorro Quente da Praça","price":12,"category":"Cachorro Quente","active":true,"ingredients":[{"name":"Pão hot dog","qty":1},{"name":"Salsicha","qty":1},{"name":"Milho","qty":1},{"name":"Batata palha","qty":1},{"name":"Molho especial","qty":1},{"name":"Catupiry","qty":1},{"name":"Bacon","qty":1},{"name":"Calabresa","qty":1}]},
+    {"id":12,"name":"Cachorro Quente Completão","price":18,"category":"Cachorro Quente","active":true,"ingredients":[{"name":"Pão hot dog","qty":1},{"name":"Salsicha","qty":1},{"name":"Milho","qty":1},{"name":"Batata palha","qty":1},{"name":"Molho especial","qty":1},{"name":"Catupiry","qty":1},{"name":"Bacon","qty":1},{"name":"Calabresa","qty":1},{"name":"Queijo","qty":1}]},
+    {"id":13,"name":"Adicional Bacon","price":3,"category":"Adicionais","active":true,"ingredients":[{"name":"Bacon","qty":1}]},
+    {"id":14,"name":"Adicional Presunto","price":3,"category":"Adicionais","active":true,"ingredients":[{"name":"Presunto","qty":1}]},
+    {"id":15,"name":"Adicional Muçarela","price":3,"category":"Adicionais","active":true,"ingredients":[{"name":"Muçarela","qty":1}]},
+    {"id":16,"name":"Adicional Salsicha","price":3,"category":"Adicionais","active":true,"ingredients":[{"name":"Salsicha","qty":1}]},
+    {"id":17,"name":"Adicional Cheddar","price":3,"category":"Adicionais","active":true,"ingredients":[{"name":"Cheddar","qty":1}]},
+    {"id":18,"name":"Coca-Cola 220ml","price":5,"category":"Bebidas","active":true,"ingredients":[{"name":"Coca-Cola 220ml","qty":1}]},
+    {"id":19,"name":"Promoção Trio Bomba","price":19.99,"category":"Promoções","active":true,"ingredients":[{"name":"Coca-Cola 220ml","qty":1},{"name":"Batata","qty":1},{"name":"Pão","qty":1},{"name":"Hambúrguer","qty":1},{"name":"Tomate","qty":1},{"name":"Alface","qty":1},{"name":"Salsicha","qty":1},{"name":"Ovo","qty":1}]}
+  ],
+  "stock": [
+    {"id":1,"name":"Pão","quantity":100,"unit":"un"},{"id":2,"name":"Hambúrguer","quantity":100,"unit":"un"},{"id":3,"name":"Pão artesanal","quantity":50,"unit":"un"},{"id":4,"name":"Hambúrguer artesanal","quantity":50,"unit":"un"},{"id":5,"name":"Pão hot dog","quantity":100,"unit":"un"},{"id":6,"name":"Tomate","quantity":100,"unit":"porção"},{"id":7,"name":"Alface","quantity":100,"unit":"porção"},{"id":8,"name":"Salsicha","quantity":100,"unit":"un"},{"id":9,"name":"Ovo","quantity":100,"unit":"un"},{"id":10,"name":"Bacon","quantity":100,"unit":"porção"},{"id":11,"name":"Calabresa","quantity":100,"unit":"porção"},{"id":12,"name":"Presunto","quantity":100,"unit":"porção"},{"id":13,"name":"Muçarela","quantity":100,"unit":"porção"},{"id":14,"name":"Milho","quantity":100,"unit":"porção"},{"id":15,"name":"Queijo","quantity":100,"unit":"porção"},{"id":16,"name":"Batata","quantity":200,"unit":"porção"},{"id":17,"name":"Batata palha","quantity":100,"unit":"porção"},{"id":18,"name":"Molho especial","quantity":100,"unit":"porção"},{"id":19,"name":"Catupiry","quantity":100,"unit":"porção"},{"id":20,"name":"Cheddar","quantity":100,"unit":"porção"},{"id":21,"name":"Coca-Cola 220ml","quantity":100,"unit":"un"}
+  ],
+  "orders": [],
+  "movements": []
+}
