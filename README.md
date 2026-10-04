@@ -1,32 +1,20 @@
-# Strike Burgue's — V5 geral
+# Strike Burgue's — V6 simples
 
-Sistema de atendente, estoque, vendas e impressão térmica pensado para uso pelo celular.
+Sistema de pedidos, estoque e histórico para usar pelo celular.
 
-## Render
+## Publicar no Render
+- Build Command: `npm install`
+- Start Command: `npm start`
+- Root Directory: deixe vazio.
 
-O projeto continua sendo Node + Express e pode ser publicado como Web Service no Render. O Render executa o `server.js`, salva os dados no `data/db.json` e serve o site.
+## Impressão
+Ao finalizar cada pedido, o sistema abre a tela de impressão do navegador. Selecione a impressora térmica que estiver configurada no Android/celular. O tamanho das letras foi aumentado. A impressão pelo navegador depende de o celular reconhecer a impressora; não envia ESC/POS diretamente por si só.
 
-**Importante sobre impressão:** um servidor no Render não consegue, por regra geral, abrir uma conexão TCP diretamente para uma impressora que está na rede Wi‑Fi privada da lanchonete. Para impressão Wi‑Fi/Bluetooth sem PC, esta V5 possui três caminhos:
+## Estoque
+A quantidade aparece em um campo editável em cada item. Digite a quantidade que existe agora e toque em **Salvar**. Também há botões + e − e entrada adicional.
 
-1. **App Android (`android-bridge/`) — recomendado:** o celular abre o mesmo sistema e a ponte Android envia ESC/POS por Wi‑Fi/IP ou Bluetooth Classic.
-2. **Bluetooth BLE pelo Chrome Android:** escolha `Bluetooth BLE` nas configurações e use o botão de teste. A compatibilidade depende da impressora e do serviço BLE que ela expõe.
-3. **Wi‑Fi direto pelo servidor:** só funciona se o servidor tiver rota de rede até a impressora (normalmente não é o caso no Render).
+## Cardápio
+Os produtos usam pão e hambúrguer comuns; os itens artesanais foram removidos do cardápio e do estoque.
 
-## Configuração da impressora
-
-No sistema, em Configurações, há:
-- Wi‑Fi / rede (IP)
-- Bluetooth
-- Bluetooth BLE
-- Navegador / teste
-- IP, porta 9100 e nome Bluetooth opcional
-
-## Android bridge
-
-A pasta `android-bridge/` contém uma base de aplicativo Android sem PC. Ele carrega a URL do Render em WebView e expõe `window.StrikePrinter.printEscPos(...)` para o site. O código nativo envia os bytes ESC/POS por TCP (Wi‑Fi) ou Bluetooth Classic (SPP).
-
-Para compilar é necessário Android Studio/SDK e JDK. Edite a URL em `MainActivity.java` antes de gerar o APK.
-
-## Limitação honesta
-
-Não existe um protocolo universal que faça qualquer impressora térmica Bluetooth/Wi‑Fi funcionar no navegador. Modelos diferentes podem usar BLE, Bluetooth Classic/SPP, TCP 9100, protocolos de fabricante ou outros serviços. Por isso o sistema é genérico e oferece tentativas diferentes; se uma impressora específica não responder, o modelo/protocolo dela precisa ser ajustado.
+## Armazenamento — atenção no Render Free
+Esta versão mantém a API e grava em `data/db.json` com gravação temporária e renomeação. Porém, o sistema de arquivos do serviço gratuito do Render é efêmero: os dados podem ser perdidos quando o serviço reinicia ou é implantado. Para armazenamento realmente persistente, configure um PostgreSQL e conecte a aplicação a ele, ou use um disco persistente pago. Faça exportação de backup regularmente.

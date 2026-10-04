@@ -12,3 +12,28 @@
   body.printing #printSheet{display:block !important;background:#fff;color:#000;min-height:100vh}
   body.printing #printSheet .print-receipt{display:block !important}
 }
+
+/* V6: interface simples, legível e confortável para uso por pessoas idosas */
+button,input,textarea,select{font-size:17px;min-height:48px}
+.product{min-height:150px;padding:18px}
+.product .name{font-size:19px;line-height:1.25}
+.product .price{font-size:21px}
+.cat-tab,.nav{font-size:14px;min-height:48px}
+.stock-actions{gap:8px}
+.stock-actions button{min-height:48px;min-width:48px;font-size:21px}
+.stock-edit{width:100px;min-height:48px;font-size:21px;font-weight:900;text-align:center;padding:8px;margin:0;border:2px solid var(--yellow)}
+.stock-main b{font-size:19px}
+.stock-row{padding:16px}
+.primary,.secondary,.danger,.ghost,.file-btn{font-size:16px;min-height:48px}
+.cart-row b{font-size:17px}
+.qty button{min-width:45px;min-height:45px;font-size:22px}
+textarea{font-size:17px;min-height:90px}
+.print-sheet{display:none}
+.print-receipt{width:72mm;max-width:100%;font-size:20px;line-height:1.45;padding:4mm;font-family:Arial, sans-serif;font-weight:600}
+.print-receipt h2{font-size:24px;font-weight:900;margin-bottom:12px}
+.print-order-no{font-size:25px;font-weight:900;margin:8px 0}
+.print-item{font-size:20px;line-height:1.5;margin:5px 0;overflow-wrap:anywhere}
+.print-total{display:block;font-size:25px;line-height:1.5;margin-top:8px}
+.print-line{border-top:2px dashed #000;margin:12px 0}
+@media(max-width:560px){.product{min-height:145px}.product .name{font-size:17px}.bottom-nav .nav{font-size:12px}.bottom-nav .nav span{font-size:20px}}
+@media print{@page{size:80mm auto;margin:3mm}body.printing #printSheet .print-receipt{width:72mm;font-size:20px}body.printing #printSheet .print-order-no,body.printing #printSheet .print-total{font-size:25px}}

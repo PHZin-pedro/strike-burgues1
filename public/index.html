@@ -23,7 +23,6 @@
   <button class="nav" data-page="estoque"><span>📦</span>Estoque</button>
   <button class="nav" data-page="historico"><span>🧾</span>Vendas</button>
   <button class="nav" data-page="produtos"><span>🍔</span>Produtos</button>
-  <button class="nav" data-page="config"><span>⚙️</span>Config.</button>
 </nav>
 
 <main>
@@ -41,7 +40,6 @@
     <div class="cart-total"><span>Total</span><strong id="cartTotal">R$ 0,00</strong></div>
     <label>Observação do pedido<textarea id="orderNote" placeholder="Ex.: sem cebola, caprichar no molho..."></textarea></label>
     <button id="sendOrder" class="primary big">🖨️ Enviar para cozinha + imprimir</button>
-    <button id="browserPrint" class="secondary big hidden">🖨️ Imprimir pelo navegador</button>
   </aside>
 </section>
 
@@ -64,22 +62,7 @@
   <div id="productAdmin"></div>
 </section>
 
-<section id="config" class="page">
-  <div class="section-head"><div><div class="eyebrow">SISTEMA</div><h1>Configurações</h1><p>Impressora, nome da loja e backup.</p></div></div>
-  <form id="configForm" class="card form-card">
-    <label>Nome da lanchonete<input id="shopName"></label>
-    <div class="two-col"><label>Modo da impressora<select id="printerMode"><option value="network">Wi‑Fi / rede (IP)</option><option value="bluetooth">Bluetooth</option><option value="ble">Bluetooth BLE</option><option value="browser">Navegador / teste</option></select></label><label>Porta Wi‑Fi<input id="printerPort" type="number" value="9100"></label></div><div class="two-col"><label>IP da impressora (Wi‑Fi)<input id="printerHost" placeholder="192.168.1.100"></label><label>Nome Bluetooth (opcional)<input id="printerBluetoothName" placeholder="Ex.: MTP-2 / POS-58"></label></div>
-    <button class="primary big">Salvar configuração</button>
-    <button type="button" id="testPrinter" class="secondary big">🧪 Testar impressora de rede</button>
-  </form>
-  <div class="card">
-    <div class="card-title"><div><div class="eyebrow">GITHUB PAGES</div><h2>Salvar as informações</h2></div><span class="cloud-dot">●</span></div>
-    <p class="muted">No GitHub Pages, o site é estático. Por isso esta versão salva automaticamente estoque, produtos e histórico no <b>armazenamento do navegador</b>. Fechar e abrir o mesmo link no mesmo celular/computador mantém os dados.</p>
-    <div class="backup-actions"><button class="secondary" onclick="exportData()">⬇ Exportar backup</button><label class="file-btn">⬆ Importar backup<input id="importFile" type="file" accept="application/json"></label><button class="danger" onclick="resetLocalData()">Resetar dados locais</button></div>
-    <p class="small-note">Para compartilhar o mesmo estoque/histórico entre vários celulares, é preciso ligar o GitHub Pages a um banco/servidor online. O modo local continua funcionando sem isso.</p>
-  </div>
-  <div class="card printer-help"><h2>Impressora</h2><p>Com Node rodando na rede, a impressão ESC/POS vai direto para a impressora Wi‑Fi/Ethernet. Se a conexão falhar, o botão de impressão pelo navegador aparece como plano B.</p><p class="muted">Bluetooth/USB direto no celular normalmente precisa de uma ponte Android; impressora de rede é a opção mais simples.</p></div>
-</section>
+
 </main>
 
 <div id="printSheet" class="print-sheet"></div>

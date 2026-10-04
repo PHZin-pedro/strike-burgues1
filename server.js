@@ -21,6 +21,16 @@ function ensureDB() {
   }
 }
 ensureDB();
+// Migração automática: remove itens artesanais que não existem no cardápio atual.
+try {
+  const db = readDB();
+  db.products = (db.products || []).filter(p => !String(p.name || '').toLowerCase().includes('artesanal'));
+  db.stock = (db.stock || []).filter(s => !String(s.name || '').toLowerCase().includes('artesanal'));
+  for (const product of db.products) {
+    product.ingredients = (product.ingredients || []).map(i => ({ ...i, name: /^pão artesanal$/i.test(i.name) ? 'Pão' : /^hambúrguer artesanal$/i.test(i.name) ? 'Hambúrguer' : i.name }));
+  }
+  writeDB(db);
+} catch (e) { console.error('Migração inicial não concluída:', e.message); }
 
 function readDB() { return JSON.parse(fs.readFileSync(DATA, "utf8")); }
 function writeDB(db) {
@@ -212,7 +222,7 @@ app.get("/api/orders/:id/receipt", (req, res) => {
   const db = readDB(); const order = db.orders.find(x => x.id == req.params.id);
   if (!order) return res.status(404).send("Pedido não encontrado");
   res.type("html").send(`<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>Pedido #${order.id}</title>
-  <style>body{font-family:monospace;width:280px;margin:auto}h2{text-align:center}.line{border-top:1px dashed #000;margin:10px 0}@media print{button{display:none}}</style>
+  <style>body{font-family:monospace;width:72mm;max-width:100%;margin:auto;font-size:18px;line-height:1.4}h2{text-align:center}.line{border-top:1px dashed #000;margin:10px 0}@media print{button{display:none}}</style>
   </head><body><h2>${esc(db.settings.name)}</h2><div>Pedido #${order.id}</div><div>${new Date(order.createdAt).toLocaleString("pt-BR")}</div><div class="line"></div>
   ${order.items.map(i => `<div>${i.quantity}x ${esc(i.name)} — R$ ${(i.price * i.quantity).toFixed(2)}${i.note ? `<br>Obs: ${esc(i.note)}` : ""}</div>`).join("")}
   ${order.note ? `<div class="line"></div><div>OBS: ${esc(order.note)}</div>` : ""}
