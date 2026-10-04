@@ -51,7 +51,7 @@
 </section>
 
 <section id="historico" class="page">
-  <div class="section-head"><div><div class="eyebrow">CAIXA / REGISTRO</div><h1>Histórico de vendas</h1><p>Todas as vendas ficam registradas neste aparelho ou no servidor.</p></div><button class="secondary" onclick="exportData()">⬇ Backup</button></div>
+  <div class="section-head"><div><div class="eyebrow">CAIXA / REGISTRO</div><h1>Histórico de vendas</h1><p>Todas as vendas ficam registradas neste aparelho ou no servidor.</p></div><div class="backup-actions"><button class="secondary" id="exportBackup">⬇ Fazer backup</button><button class="secondary" id="importBackup">⬆ Restaurar backup</button><input id="hiddenFile" type="file" accept="application/json" class="hidden"></div></div>
   <div class="stats" id="salesStats"></div>
   <div class="filter-row"><input id="historySearch" placeholder="🔎 Buscar pedido ou produto..."><input id="historyDate" type="date"><button class="ghost" onclick="clearHistoryFilters()">Limpar</button></div>
   <div id="ordersList"></div>
@@ -68,7 +68,6 @@
 <div id="printSheet" class="print-sheet"></div>
 <div id="toast"></div>
 <div id="modal" class="modal hidden"></div>
-<input id="hiddenFile" type="file" accept="application/json" class="hidden">
 <script src="./js/app.js"></script>
 </body>
 </html>

@@ -16,8 +16,22 @@ app.use(express.static(path.join(__dirname, "public")));
 
 function ensureDB() {
   if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
+  const seedPath = path.join(DATA_DIR, "seed.json");
+  // Inicializa com o cardápio Strike Burgue's se o banco ainda não existe.
   if (!fs.existsSync(DATA)) {
-    fs.writeFileSync(DATA, JSON.stringify({ settings: {}, products: [], stock: [], orders: [], movements: [] }, null, 2));
+    const seed = fs.existsSync(seedPath)
+      ? JSON.parse(fs.readFileSync(seedPath, "utf8"))
+      : { settings: { name: "Strike Burgue's" }, products: [], stock: [], orders: [], movements: [] };
+    fs.writeFileSync(DATA, JSON.stringify(seed, null, 2));
+  } else {
+    // Corrige bancos criados anteriormente vazios, sem apagar dados existentes.
+    const current = JSON.parse(fs.readFileSync(DATA, "utf8"));
+    if ((!current.products || current.products.length === 0) && (!current.stock || current.stock.length === 0) && fs.existsSync(seedPath)) {
+      const seed = JSON.parse(fs.readFileSync(seedPath, "utf8"));
+      seed.orders = current.orders || [];
+      seed.movements = current.movements || [];
+      fs.writeFileSync(DATA, JSON.stringify(seed, null, 2));
+    }
   }
 }
 ensureDB();
@@ -90,6 +104,29 @@ function printNetwork(order, settings) {
 }
 
 app.get("/api/health", (req, res) => res.json({ ok: true, service: "strike-burgues", time: new Date().toISOString() }));
+
+// Restaura um backup JSON validado. Essa rota é usada pelo botão de restauração.
+app.post("/api/backup", (req, res) => {
+  const incoming = req.body || {};
+  if (!Array.isArray(incoming.products) || !Array.isArray(incoming.stock) || !Array.isArray(incoming.orders)) {
+    return res.status(400).json({ error: "Backup inválido: faltam produtos, estoque ou vendas." });
+  }
+  const current = readDB();
+  const next = {
+    settings: incoming.settings && typeof incoming.settings === "object" ? incoming.settings : current.settings,
+    products: incoming.products,
+    stock: incoming.stock,
+    orders: incoming.orders,
+    movements: Array.isArray(incoming.movements) ? incoming.movements : []
+  };
+  // IDs e campos básicos são normalizados para evitar dados malformados.
+  next.products = next.products.map((p, i) => ({ ...p, id: Number(p.id) || i + 1, name: String(p.name || "Produto"), price: money(p.price), active: p.active !== false, ingredients: Array.isArray(p.ingredients) ? p.ingredients : [] }));
+  next.stock = next.stock.map((item, i) => ({ ...item, id: Number(item.id) || i + 1, name: String(item.name || "Item"), quantity: Math.max(0, Number(item.quantity) || 0), unit: String(item.unit || "un") }));
+  next.orders = next.orders.map((o, i) => ({ ...o, id: Number(o.id) || i + 1, items: Array.isArray(o.items) ? o.items : [], total: money(o.total), createdAt: o.createdAt || new Date().toISOString() }));
+  next.movements = next.movements.map((m, i) => ({ ...m, id: Number(m.id) || i + 1 }));
+  writeDB(next);
+  res.json({ ok: true, products: next.products.length, stock: next.stock.length, orders: next.orders.length });
+});
 
 app.get("/api/settings", (req, res) => res.json(readDB().settings));
 app.put("/api/settings", (req, res) => {
@@ -168,16 +205,23 @@ app.post("/api/orders", (req, res) => {
     normalized.push({ productId: p.id, name: p.name, price: p.price, quantity: qty, note: String(item.note || "") });
   }
 
-  const stockChanges = [];
+  const requiredByStock = new Map();
   for (const item of normalized) {
     const p = db.products.find(x => x.id === item.productId);
     for (const ing of (p.ingredients || [])) {
-      const stock = db.stock.find(s => s.name.toLowerCase() === String(ing.name).toLowerCase());
-      if (stock) {
-        const amount = Number(ing.qty || 0) * item.quantity;
-        if (stock.quantity < amount) return res.status(409).json({ error: `Estoque insuficiente: ${stock.name}. Disponível: ${stock.quantity}.` });
-        stockChanges.push({ stock, amount });
+      const stockItem = db.stock.find(s => s.name.trim().toLowerCase() === String(ing.name).trim().toLowerCase());
+      if (stockItem) {
+        const amount = Math.max(0, Number(ing.qty || 0)) * item.quantity;
+        const previous = requiredByStock.get(stockItem.id) || { stock: stockItem, amount: 0 };
+        previous.amount += amount;
+        requiredByStock.set(stockItem.id, previous);
       }
+    }
+  }
+  const stockChanges = [...requiredByStock.values()];
+  for (const change of stockChanges) {
+    if (Number(change.stock.quantity) < change.amount) {
+      return res.status(409).json({ error: `Estoque insuficiente: ${change.stock.name}. Disponível: ${change.stock.quantity}; necessário: ${change.amount}.` });
     }
   }
 

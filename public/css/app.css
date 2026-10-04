@@ -37,3 +37,21 @@ textarea{font-size:17px;min-height:90px}
 .print-line{border-top:2px dashed #000;margin:12px 0}
 @media(max-width:560px){.product{min-height:145px}.product .name{font-size:17px}.bottom-nav .nav{font-size:12px}.bottom-nav .nav span{font-size:20px}}
 @media print{@page{size:80mm auto;margin:3mm}body.printing #printSheet .print-receipt{width:72mm;font-size:20px}body.printing #printSheet .print-order-no,body.printing #printSheet .print-total{font-size:25px}}
+
+/* V8: alvos de toque maiores e visual mais legível */
+button { touch-action: manipulation; }
+button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid #ffd400; outline-offset: 2px; }
+.product { min-height: 140px; }
+.product .name { font-size: 18px; }
+.product .price { font-size: 20px; }
+.stock-edit { width: 110px; }
+@media (max-width: 560px) {
+  .bottom-nav .nav { font-size: 13px; min-height: 58px; }
+  .product { min-height: 150px; }
+  .product .name { font-size: 17px; }
+  .product .price { font-size: 19px; }
+  .stock-actions { display: grid; grid-template-columns: 48px minmax(80px,1fr) 48px; width: 100%; }
+  .stock-actions .primary, .stock-actions .secondary { grid-column: span 1; }
+  .stock-edit { width: 100%; }
+  .cart .big { min-height: 60px; font-size: 17px; }
+}

@@ -33,9 +33,18 @@ function localData(){let d=localStorage.getItem(LOCAL_KEY);if(!d){localStorage.s
 function saveLocal(){localStorage.setItem(LOCAL_KEY,JSON.stringify({settings,products,stock,orders,movements}))}
 function setConnection(ok){$('#connection').classList.toggle('offline',!ok);$('#connection').innerHTML=`<span></span> ${ok?'Online / salvo':'Modo local / salvo no aparelho'}`}
 async function api(url,opt={}){
-  if(!apiAvailable) throw Error('LOCAL_MODE');
-  try{let r=await fetch(url,{headers:{'Content-Type':'application/json'},...opt});let d=await r.json().catch(()=>({}));if(!r.ok)throw Error(d.error||'Erro');return d}
-  catch(e){apiAvailable=false;setConnection(false);throw e}
+  if(!apiAvailable) throw Error('O servidor não está conectado.');
+  let response;
+  try {
+    response = await fetch(url, { headers: { 'Content-Type': 'application/json' }, ...opt });
+  } catch (e) {
+    apiAvailable = false;
+    setConnection(false);
+    throw new Error('Sem conexão com o servidor. Confira a internet e recarregue a página.');
+  }
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(data.error || `Erro do servidor (${response.status}).`);
+  return data;
 }
 async function load(){
   if(apiAvailable){try{[products,stock,orders,settings,movements]=await Promise.all([api('/api/products'),api('/api/stock'),api('/api/orders'),api('/api/settings'),api('/api/movements')]);setConnection(true)}catch(e){loadLocal()}}
@@ -112,9 +121,35 @@ $('#modal').addEventListener('click',e=>{if(e.target.id==='modal')closeModal()})
 function toast(msg,error=false){const x=$('#toast');x.textContent=msg;x.className=error?'toast-error':'';x.style.display='block';clearTimeout(window.__toast);window.__toast=setTimeout(()=>x.style.display='none',3000)}
 
 function exportData(){const data={version:2,exportedAt:new Date().toISOString(),settings,products,stock,orders,movements};const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`strike-backup-${new Date().toISOString().slice(0,10)}.json`;a.click();URL.revokeObjectURL(a.href);toast('Backup exportado.')}
-$('#importFile').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!d.products||!d.stock||!d.orders)throw Error();settings=d.settings||settings;products=d.products;stock=d.stock;orders=d.orders;movements=d.movements||[];saveLocal();renderAll();toast('Backup importado neste aparelho.')}catch{toast('Arquivo de backup inválido.',true)}};r.readAsText(f)};
+const backupInput = $('#hiddenFile');
+$('#exportBackup')?.addEventListener('click', exportData);
+$('#importBackup')?.addEventListener('click', () => backupInput?.click());
+backupInput?.addEventListener('change', e => {
+  const f = e.target.files?.[0]; if (!f) return;
+  const r = new FileReader();
+  r.onload = () => {
+    try {
+      const d = JSON.parse(r.result);
+      if (!Array.isArray(d.products) || !Array.isArray(d.stock) || !Array.isArray(d.orders)) throw new Error('Arquivo incompleto');
+      if (!confirm('Restaurar este backup vai substituir os produtos, estoque e vendas atuais. Deseja continuar?')) return;
+      if (apiAvailable) {
+        api('/api/backup', { method: 'POST', body: JSON.stringify(d) }).then(async () => {
+          [products, stock, orders, settings, movements] = await Promise.all([api('/api/products'), api('/api/stock'), api('/api/orders'), api('/api/settings'), api('/api/movements')]);
+          $('#brand').textContent = (settings.name || 'Strike').toUpperCase().replace(" BURGUE'S", '');
+          renderAll(); toast('Backup restaurado no servidor.');
+        }).catch(err => toast(err.message || 'Não foi possível restaurar o backup.', true));
+      } else {
+        settings = d.settings || settings; products = d.products; stock = d.stock; orders = d.orders; movements = d.movements || [];
+        saveLocal(); renderAll(); toast('Backup restaurado neste aparelho.');
+      }
+    } catch { toast('Arquivo de backup inválido.', true); }
+    finally { backupInput.value = ''; }
+  };
+  r.readAsText(f);
+});
 function resetLocalData(){if(!confirm('Isso vai apagar os dados salvos neste navegador e voltar para o cardápio inicial. Continuar?'))return;localStorage.removeItem(LOCAL_KEY);location.reload()}
 
 window.addEventListener('online',()=>{if(!apiAvailable){apiAvailable=!isGitHub;load()}});window.addEventListener('offline',()=>setConnection(false));
 document.querySelectorAll('.nav').forEach(b=>b.onclick=()=>{document.querySelectorAll('.nav').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));$('#'+b.dataset.page).classList.add('active');if(b.dataset.page==='historico')renderOrders();if(b.dataset.page==='estoque')renderStock()});
-load();
+window.addEventListener('error', e => { console.error(e.error || e.message); toast('O sistema encontrou um erro. Recarregue a página.', true); });
+load().catch(e => { console.error(e); toast('Não foi possível carregar os dados. Atualize a página.', true); });
