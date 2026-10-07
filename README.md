@@ -1,35 +1,55 @@
-# Strike Burgue's — V8 corrigido
+# Strike Burgue's — versão Supabase
 
-Sistema de pedidos, estoque e histórico para usar pelo celular.
+Sistema simples para o atendente usar no celular.
 
-## Publicar no Render
-- Build Command: `npm install`
-- Start Command: `npm start`
-- Root Directory: deixe vazio.
+## O que esta versão usa
+- Node.js + Express
+- HTML/CSS/JavaScript puro
+- Supabase PostgreSQL para produtos, estoque e vendas
+- Impressão pelo diálogo de impressão do navegador do celular
+- Sem React, TypeScript, SQLite ou Python
 
-## Impressão
-Ao finalizar cada pedido, o sistema abre a tela de impressão do navegador. Selecione a impressora térmica que estiver configurada no Android/celular. O tamanho das letras foi aumentado. A impressão pelo navegador depende de o celular reconhecer a impressora; não envia ESC/POS diretamente por si só.
+## Variáveis no Render
+No serviço do Render, em **Environment**, mantenha:
 
-## Estoque
-A quantidade aparece em um campo editável em cada item. Digite a quantidade que existe agora e toque em **Salvar**. Também há botões + e − e entrada adicional.
+```text
+SUPABASE_URL=https://vzrgkrmlhdvprnesvrrp.supabase.co
+SUPABASE_SERVICE_ROLE_KEY=chave_secreta_do_supabase
+```
 
-## Cardápio
-Os produtos usam pão e hambúrguer comuns; os itens artesanais foram removidos do cardápio e do estoque.
+A chave `SUPABASE_SERVICE_ROLE_KEY` é privada e nunca deve ir para o GitHub.
 
-## Armazenamento — atenção no Render Free
-Esta versão mantém a API e grava em `data/db.json` com gravação temporária e renomeação. Porém, o sistema de arquivos do serviço gratuito do Render é efêmero: os dados podem ser perdidos quando o serviço reinicia ou é implantado. Para armazenamento realmente persistente, configure um PostgreSQL e conecte a aplicação a ele, ou use um disco persistente pago. Faça exportação de backup regularmente.
+## Deploy
+O Render pode usar:
 
+```text
+Build Command: npm install
+Start Command: npm start
+```
 
-## Correção V7: cardápio inicial
-O servidor agora inicializa automaticamente o banco com o cardápio Strike Burgue’s e o estoque inicial quando o banco ainda não existe ou foi criado vazio. O arquivo `data/seed.json` é o modelo inicial; dados já cadastrados não são sobrescritos.
+Depois de salvar as variáveis, faça **Manual Deploy → Deploy latest commit**.
 
+## Banco
+A estrutura do Supabase precisa conter estas tabelas, criadas pelo SQL que foi executado no projeto:
 
-## Correções V8
-- Corrigido o erro JavaScript que interrompia o carregamento dos botões: o código tentava registrar eventos em `#importFile`, elemento que não existia.
-- O botão de backup e o de restauração agora estão ligados a elementos existentes.
-- Erros HTTP (como estoque insuficiente) não desligam mais a API e não mandam o sistema silenciosamente para o modo local.
-- Adicionados foco visível e áreas de toque maiores no celular.
-- O CSS foi limpo de texto de documentação que havia sido anexado por engano.
+- `products`
+- `stock_items`
+- `product_ingredients`
+- `orders`
+- `order_items`
+- `stock_movements`
 
-## Observação sobre dados no Render Free
-O arquivo `data/db.json` pode ser apagado pelo ambiente efêmero do plano gratuito durante reinicializações/deploys. Não use o modo local como cópia principal dos dados. Para persistência confiável, configure um banco PostgreSQL e conecte-o à aplicação ou use armazenamento persistente compatível.
+O servidor usa o `service_role` apenas no backend do Render.
+
+## Como funciona
+1. O celular abre o endereço do Render.
+2. O cardápio vem do Supabase.
+3. O atendente monta o pedido.
+4. Ao enviar, o servidor grava a venda e baixa os ingredientes do estoque.
+5. O celular abre a impressão do navegador para escolher a impressora térmica.
+6. Produtos e estoque podem ser alterados pelo próprio sistema.
+
+## Impressora térmica pelo celular
+A impressão desta versão é **pelo navegador**, conforme solicitado. No Android, se a impressora aparecer como impressora do sistema/serviço de impressão, ela pode ser escolhida na tela de impressão.
+
+Impressoras Bluetooth térmicas que não aparecem como impressora do Android podem exigir um aplicativo/ponte do fabricante; o navegador puro não consegue garantir conexão Bluetooth clássica.
