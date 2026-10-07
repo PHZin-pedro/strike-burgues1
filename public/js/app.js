@@ -75,6 +75,10 @@ async function load(){
     if(ro.status==='fulfilled'&&Array.isArray(ro.value))orders=ro.value;
     if(rt.status==='fulfilled'&&rt.value&&typeof rt.value==='object')settings=rt.value;
     if(rm.status==='fulfilled'&&Array.isArray(rm.value))movements=rm.value;
+    const falhas=[];
+    if(rp.status!=='fulfilled')falhas.push('produtos: '+rp.reason?.message);else if(!validProducts(rp.value))falhas.push('o cardápio do servidor não tem os 19 produtos esperados (usando cópia local)');
+    if(rs.status!=='fulfilled')falhas.push('estoque: '+rs.reason?.message);else if(!validStock(rs.value))falhas.push('o estoque do servidor tem menos de 18 itens (usando cópia local)');
+    if(falhas.length){console.warn('Dados do servidor:',falhas);toast('Atenção: '+falhas[0],true)}
     const ok=rp.status==='fulfilled'||rs.status==='fulfilled';
     setConnection(ok);
   }else setConnection(false);
