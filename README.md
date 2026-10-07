@@ -53,3 +53,12 @@ O servidor usa o `service_role` apenas no backend do Render.
 A impressão desta versão é **pelo navegador**, conforme solicitado. No Android, se a impressora aparecer como impressora do sistema/serviço de impressão, ela pode ser escolhida na tela de impressão.
 
 Impressoras Bluetooth térmicas que não aparecem como impressora do Android podem exigir um aplicativo/ponte do fabricante; o navegador puro não consegue garantir conexão Bluetooth clássica.
+
+
+## Versao final 2026-10-07
+- JavaScript com chave local nova para abandonar dados corrompidos antigos.
+- Cache do index.html e app.js desativado no servidor.
+- Endpoint /api/version para conferir a build.
+- Correcao da consulta de product_ingredients: nao usa mais coluna id inexistente.
+- Atualizacao de estoque nao depende do historico de movimentacoes.
+- Cardapio fixo com 19 produtos e 18 itens de estoque, sem Molho especial.

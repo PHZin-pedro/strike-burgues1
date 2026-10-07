@@ -3,7 +3,7 @@ let category='Todos';
 const $=s=>document.querySelector(s);
 const money=n=>Number(n||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
-const LOCAL_KEY='strike-burgues-app-v3';
+const LOCAL_KEY='strike-burgues-app-final-20261007';
 const isGitHub=location.hostname.endsWith('github.io');
 let apiAvailable=!isGitHub;
 
@@ -25,13 +25,13 @@ const seed={
     {id:13,name:'Adicional Bacon',price:3,category:'Adicionais',active:true,ingredients:[{name:'Bacon',qty:1}]},{id:14,name:'Adicional Presunto',price:3,category:'Adicionais',active:true,ingredients:[{name:'Presunto',qty:1}]},{id:15,name:'Adicional Muçarela',price:3,category:'Adicionais',active:true,ingredients:[{name:'Muçarela',qty:1}]},{id:16,name:'Adicional Salsicha',price:3,category:'Adicionais',active:true,ingredients:[{name:'Salsicha',qty:1}]},{id:17,name:'Adicional Cheddar',price:3,category:'Adicionais',active:true,ingredients:[{name:'Cheddar',qty:1}]},{id:18,name:'Coca-Cola 220ml',price:5,category:'Bebidas',active:true,ingredients:[{name:'Coca-Cola 220ml',qty:1}]},{id:19,name:'Promoção Trio Bomba',price:19.99,category:'Promoções',active:true,ingredients:[{name:'Coca-Cola 220ml',qty:1},{name:'Batata',qty:1},{name:'Pão',qty:1},{name:'Hambúrguer',qty:1},{name:'Tomate',qty:1},{name:'Alface',qty:1},{name:'Salsicha',qty:1},{name:'Ovo',qty:1}]}
   ],
   stock:[
-    {id:1,name:'Pão',quantity:100,unit:'un'},{id:2,name:'Hambúrguer',quantity:100,unit:'un'},{id:5,name:'Pão hot dog',quantity:100,unit:'un'},{id:6,name:'Tomate',quantity:100,unit:'porção'},{id:7,name:'Alface',quantity:100,unit:'porção'},{id:8,name:'Salsicha',quantity:100,unit:'un'},{id:9,name:'Ovo',quantity:100,unit:'un'},{id:10,name:'Bacon',quantity:100,unit:'porção'},{id:11,name:'Calabresa',quantity:100,unit:'porção'},{id:12,name:'Presunto',quantity:100,unit:'porção'},{id:13,name:'Muçarela',quantity:100,unit:'porção'},{id:14,name:'Milho',quantity:100,unit:'porção'},{id:15,name:'Queijo',quantity:100,unit:'porção'},{id:16,name:'Batata',quantity:200,unit:'porção'},{id:17,name:'Batata palha',quantity:100,unit:'porção'},{id:19,name:'Catupiry',quantity:100,unit:'porção'},{id:20,name:'Cheddar',quantity:100,unit:'porção'},{id:21,name:'Coca-Cola 220ml',quantity:100,unit:'un'}],orders:[],movements:[]
+    {id:1,name:'Pão',quantity:100,unit:'un'},{id:2,name:'Hambúrguer',quantity:100,unit:'un'},{id:3,name:'Pão hot dog',quantity:100,unit:'un'},{id:4,name:'Tomate',quantity:100,unit:'porção'},{id:5,name:'Alface',quantity:100,unit:'porção'},{id:6,name:'Salsicha',quantity:100,unit:'un'},{id:7,name:'Ovo',quantity:100,unit:'un'},{id:8,name:'Bacon',quantity:100,unit:'porção'},{id:9,name:'Calabresa',quantity:100,unit:'porção'},{id:10,name:'Presunto',quantity:100,unit:'porção'},{id:11,name:'Muçarela',quantity:100,unit:'porção'},{id:12,name:'Milho',quantity:100,unit:'porção'},{id:13,name:'Queijo',quantity:100,unit:'porção'},{id:14,name:'Batata',quantity:200,unit:'porção'},{id:15,name:'Batata palha',quantity:100,unit:'porção'},{id:16,name:'Catupiry',quantity:100,unit:'porção'},{id:17,name:'Cheddar',quantity:100,unit:'porção'},{id:18,name:'Coca-Cola 220ml',quantity:100,unit:'un'}],orders:[],movements:[]
 };
 
 function clone(o){return JSON.parse(JSON.stringify(o));}
 function localData(){let d=localStorage.getItem(LOCAL_KEY);if(!d){localStorage.setItem(LOCAL_KEY,JSON.stringify(seed));return clone(seed)}return JSON.parse(d)}
 function saveLocal(){localStorage.setItem(LOCAL_KEY,JSON.stringify({settings,products,stock,orders,movements}))}
-function setConnection(ok){$('#connection').classList.toggle('offline',!ok);$('#connection').innerHTML=`<span></span> ${ok?'Online / salvo':'Modo local / salvo no aparelho'}`}
+function setConnection(ok){const el=$('#connection');if(!el)return;el.classList.toggle('offline',!ok);el.innerHTML=`<span></span> ${ok?'Online / salvo':'Modo local / salvo no aparelho'}`}
 async function api(url,opt={}){
   if(!apiAvailable) throw Error('O servidor não está conectado.');
   let response;
@@ -46,15 +46,15 @@ async function api(url,opt={}){
   if (!response.ok) throw new Error(data.error || `Erro do servidor (${response.status}).`);
   return data;
 }
+const EXPECTED_PRODUCTS=['X-Tudd da Praça','X-Bacon','X-Calabresa','X-Trio','X-Strike','Batata Pequena 200g','Batata Pequena Completa 200g','Batata Grande 400g','Batata Grande Completa 400g','Cachorro Quente Simples','Cachorro Quente da Praça','Cachorro Quente Completão','Adicional Bacon','Adicional Presunto','Adicional Muçarela','Adicional Salsicha','Adicional Cheddar','Coca-Cola 220ml','Promoção Trio Bomba'];
 function validProducts(list){
-  if(!Array.isArray(list)||list.length<19)return false;
-  const names=list.map(p=>String(p?.name||'').trim()).filter(Boolean);
-  const unique=new Set(names.map(x=>x.toLowerCase()));
-  if(unique.size<10)return false;
-  if(names.length && names.every(x=>x.toLowerCase()==='cachorro quente simples'))return false;
+  if(!Array.isArray(list)||list.length!==EXPECTED_PRODUCTS.length)return false;
+  const got=list.map(p=>String(p?.name||'').trim().toLowerCase());
+  const expected=EXPECTED_PRODUCTS.map(x=>x.toLowerCase());
+  if(!expected.every(x=>got.includes(x)))return false;
   return list.every(p=>Number.isFinite(Number(p.id))&&String(p.name||'').trim()&&Number.isFinite(Number(p.price)));
 }
-function validStock(list){return Array.isArray(list)&&list.length>=10&&list.every(x=>x&&String(x.name||'').trim()&&Number.isFinite(Number(x.quantity)));}
+function validStock(list){return Array.isArray(list)&&list.length>=18&&list.every(x=>x&&Number.isFinite(Number(x.id))&&String(x.name||'').trim()&&Number.isFinite(Number(x.quantity)));}
 function safeLocalData(){
   try{
     const d=localData();
@@ -75,7 +75,7 @@ async function load(){
     if(ro.status==='fulfilled'&&Array.isArray(ro.value))orders=ro.value;
     if(rt.status==='fulfilled'&&rt.value&&typeof rt.value==='object')settings=rt.value;
     if(rm.status==='fulfilled'&&Array.isArray(rm.value))movements=rm.value;
-    const ok=results.some(x=>x.status==='fulfilled');
+    const ok=rp.status==='fulfilled'||rs.status==='fulfilled';
     setConnection(ok);
   }else setConnection(false);
   $('#brand').textContent=(settings.name||"Strike").toUpperCase().replace(" BURGUE'S",'');
@@ -199,5 +199,5 @@ function resetLocalData(){if(!confirm('Isso vai apagar os dados salvos neste nav
 
 window.addEventListener('online',()=>{if(!apiAvailable){apiAvailable=!isGitHub;load()}});window.addEventListener('offline',()=>setConnection(false));
 document.querySelectorAll('.nav').forEach(b=>b.onclick=()=>{document.querySelectorAll('.nav').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));$('#'+b.dataset.page).classList.add('active');if(b.dataset.page==='historico')renderOrders();if(b.dataset.page==='estoque')renderStock()});
-window.addEventListener('error', function(e) { console.error(e.error || e.message); try { toast('O sistema encontrou um erro. Recarregue a página.', true); } catch (_) {} });
+window.addEventListener('error', function(e){console.error(e.error||e.message)});
 load().catch(e => { console.error(e); toast('Não foi possível carregar os dados. Atualize a página.', true); });

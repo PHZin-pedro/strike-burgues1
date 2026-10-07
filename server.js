@@ -12,7 +12,15 @@ const DB_MODE = SUPABASE_URL && SUPABASE_KEY ? 'supabase' : 'local-fallback';
 
 app.use(cors());
 app.use(express.json({ limit: '2mb' }));
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public'), {
+  setHeaders(res, filePath) {
+    if (filePath.endsWith('index.html') || filePath.endsWith('app.js')) {
+      res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+      res.setHeader('Pragma', 'no-cache');
+      res.setHeader('Expires', '0');
+    }
+  }
+}));
 
 function money(n) {
   return Number(Number(n || 0).toFixed(2));
@@ -97,7 +105,7 @@ async function getProductRows() {
 
 async function getIngredientRows() {
   return sbFetch('product_ingredients', {
-    query: q({ select: '*', order: 'id.asc' })
+    query: q({ select: '*', order: 'product_id.asc,stock_item_id.asc' })
   });
 }
 
@@ -184,6 +192,10 @@ async function getMovements() {
     reason: m.reason || ''
   }));
 }
+
+app.get('/api/version', (req, res) => {
+  res.json({ ok: true, version: '20261007-final-1', database: DB_MODE });
+});
 
 app.get('/api/health', (req, res) => {
   res.json({

@@ -1,0 +1,31 @@
+STRIKE BURGUE'S - VERSAO FINAL
+
+O que foi corrigido:
+1. app.js agora usa uma chave local nova e ignora o cache/dado local antigo que estava transformando o cardapio em Cachorro Quente Simples.
+2. index.html usa uma versao nova do app.js e inclui a meta mobile-web-capable.
+3. O servidor envia index.html e app.js com Cache-Control no-store.
+4. /api/products nao tenta mais ordenar product_ingredients por uma coluna id que nao existe.
+5. /api/stock/:id atualiza o estoque primeiro; falha no historico de movimentacoes nao desfaz nem mascara a atualizacao.
+6. /api/version permite conferir a build 20261007-final-1.
+7. Cardapio local tem exatamente 19 produtos.
+8. Estoque local tem exatamente 18 itens, sem Molho especial.
+9. A impressao continua sendo feita pela tela de impressao do navegador.
+
+PARA PUBLICAR NO GITHUB/RENDER
+- Substitua os arquivos do repositorio pelos arquivos desta pasta.
+- Commit sugerido: versao final strike burgues
+- Envie para a branch main.
+- O Render deve fazer um novo deploy do commit.
+- Nao coloque SUPABASE_SERVICE_ROLE_KEY no GitHub. Ela deve continuar somente nas Environment Variables do Render.
+
+NO SUPABASE
+- Abra o SQL Editor.
+- Execute o arquivo supabase-fix.sql UMA VEZ.
+- Ele preserva pedidos existentes e reconstrui apenas produtos, ingredientes e itens de estoque.
+
+CONFERENCIA APOS DEPLOY
+Abra:
+/api/version
+Deve aparecer: {"ok":true,"version":"20261007-final-1",...}
+
+Depois abra a tela principal em uma aba anonima/privada ou recarregue completamente.

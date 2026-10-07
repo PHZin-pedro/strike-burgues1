@@ -14,5 +14,17 @@
   },
   "engines": {
     "node": ">=18"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PHZin-pedro/strike-burgues1.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/PHZin-pedro/strike-burgues1/issues"
+  },
+  "homepage": "https://github.com/PHZin-pedro/strike-burgues1#readme"
 }
