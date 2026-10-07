@@ -151,5 +151,5 @@ function resetLocalData(){if(!confirm('Isso vai apagar os dados salvos neste nav
 
 window.addEventListener('online',()=>{if(!apiAvailable){apiAvailable=!isGitHub;load()}});window.addEventListener('offline',()=>setConnection(false));
 document.querySelectorAll('.nav').forEach(b=>b.onclick=()=>{document.querySelectorAll('.nav').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));$('#'+b.dataset.page).classList.add('active');if(b.dataset.page==='historico')renderOrders();if(b.dataset.page==='estoque')renderStock()});
-window.addEventListener('error', e => { console.error(e.error || e.message); toast('O sistema encontrou um erro. Recarregue a página.', true); });
+window.addEventListener('error', function(e) { console.error(e.error || e.message); try { toast('O sistema encontrou um erro. Recarregue a página.', true); } catch (_) {} });
 load().catch(e => { console.error(e); toast('Não foi possível carregar os dados. Atualize a página.', true); });
