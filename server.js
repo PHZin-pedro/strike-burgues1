@@ -194,7 +194,7 @@ async function getMovements() {
 }
 
 app.get('/api/version', (req, res) => {
-  res.json({ ok: true, version: '20261007-final-1', database: DB_MODE });
+  res.json({ ok: true, version: '20261007-final-2', database: DB_MODE });
 });
 
 app.get('/api/health', (req, res) => {
@@ -477,6 +477,31 @@ app.patch('/api/stock/:id', async (req, res) => {
       code: e.code || undefined
     });
   }
+});
+
+
+// Diagnóstico: abra /api/diagnostico no navegador para ver o erro real do Supabase.
+app.get('/api/diagnostico', async (req, res) => {
+  const out = { version: '20261007-final-2', database: DB_MODE, checks: {} };
+  const run = async (name, fn) => {
+    try { out.checks[name] = { ok: true, ...(await fn()) }; }
+    catch (e) {
+      out.checks[name] = { ok: false, status: e.status, code: e.code, message: e.message, hint: e.hint };
+    }
+  };
+  await run('ler_products', async () => { const r = await getProductRows(); return { total: r.length, ids: r.map(p => p.id) }; });
+  await run('ler_stock_items', async () => { const r = await getStockRows(); return { total: r.length, ids: r.map(s => s.id), colunas: r[0] ? Object.keys(r[0]) : [] }; });
+  await run('ler_product_ingredients', async () => { const r = await getIngredientRows(); return { total: r.length }; });
+  await run('ler_orders', async () => { const r = await sbFetch('orders', { query: q({ select: '*', limit: '1' }) }); return { colunas: r[0] ? Object.keys(r[0]) : [] }; });
+  await run('ler_stock_movements', async () => { const r = await sbFetch('stock_movements', { query: q({ select: '*', limit: '1' }) }); return { colunas: r[0] ? Object.keys(r[0]) : [] }; });
+  await run('escrever_stock_items', async () => {
+    const rows = await getStockRows();
+    if (!rows.length) return { aviso: 'sem itens' };
+    const it = rows[0];
+    await sbFetch('stock_items', { method: 'PATCH', query: q({ id: `eq.${it.id}` }), body: { quantity: it.quantity } });
+    return { testado_id: it.id, nota: 'regravou o mesmo valor, nada mudou' };
+  });
+  res.json(out);
 });
 
 app.get('/api/movements', async (req, res) => {
